@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Experto de Medicamentos - CDMX</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            color: #263238;
+        }
+
+        .contenedor {
+            max-width: 700px;
+            margin: 25px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.10);
+        }
+
+        h1 {
+            color: #174a75;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #607080;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 13px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        select {
+            border: 1px solid #bdc9d4;
+            background: white;
+        }
+
+        button {
+            margin-top: 25px;
+            border: none;
+            background: #1769aa;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #104c7d;
+        }
+
+        #resultado {
+            margin-top: 25px;
+            padding: 18px;
+            background: #f1f7fc;
+            border-left: 5px solid #1769aa;
+            border-radius: 8px;
+            min-height: 60px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .aviso {
+            margin-top: 25px;
+            padding: 12px;
+            background: #fff4dc;
+            border-radius: 8px;
+            color: #654d18;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #718096;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="contenedor">
+        <h1>Orientación sobre medicamentos</h1>
+
+        <p class="subtitulo">
+            Sistema experto de orientación sobre el desabasto
+            de medicamentos en la Ciudad de México.
+        </p>
+
+        <label for="medicamento">
+            Selecciona un medicamento:
+        </label>
+
+        <select id="medicamento">
+            <option value="aspirina">Aspirina</option>
+            <option value="paracetamol">Paracetamol</option>
+            <option value="ibuprofeno">Ibuprofeno</option>
+            <option value="metformina">Metformina</option>
+            <option value="insulina">Insulina</option>
+        </select>
+
+        <button id="botonConsultar" onclick="consultar()">
+            Consultar orientación
+        </button>
+
+        <div id="resultado" role="status" aria-live="polite">
+            Selecciona un medicamento y pulsa el botón para
+            consultar al sistema experto.
+        </div>
+
+        <div class="aviso">
+            <strong>Importante:</strong> las recomendaciones se
+            generan a partir de una base de conocimiento de ejemplo.
+            No representan la disponibilidad real de las farmacias
+            de la CDMX ni sustituyen la orientación de un profesional
+            de la salud. No cambies ni suspendas un tratamiento
+            sin consultar con tu profesional de salud.
+        </div>
+
+        <footer>
+            Proyecto escolar · SWI-Prolog · Sistema experto
+        </footer>
+    </main>
+
+    <script>
+        async function consultar() {
+            const medicamento =
+                document.getElementById("medicamento").value;
+
+            const resultado =
+                document.getElementById("resultado");
+
+            const boton =
+                document.getElementById("botonConsultar");
+
+            resultado.textContent =
+                "Consultando al sistema experto Prolog...";
+
+            boton.disabled = true;
+            boton.textContent = "Consultando...";
+
+            try {
+                const respuesta = await fetch(
+                    "/api/consultar?medicamento=" +
+                    encodeURIComponent(medicamento)
+                );
+
+                const texto = await respuesta.text();
+
+                if (!respuesta.ok) {
+                    throw new Error("Error del servidor");
+                }
+
+                resultado.textContent = texto;
+
+            } catch (error) {
+                resultado.textContent =
+                    "No se pudo conectar con el sistema experto. " +
+                    "Verifica que el servidor Prolog siga funcionando.";
+            } finally {
+                boton.disabled = false;
+                boton.textContent = "Consultar orientación";
+            }
+        }
+    </script>
+</body>
+</html>
