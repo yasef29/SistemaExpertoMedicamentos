@@ -75,10 +75,20 @@ mostrar_recomendacion(confirmar_existencia) :-
         []
     ).
 
-% Iniciar el servidor
+
+% Iniciar el servidor compatible con Render
+
 main :-
-    http_server(http_dispatch, [port(8080)]),
-    format('Servidor iniciado en http://localhost:8080/~n', []),
+    ( getenv('PORT', PortAtom),
+      atom_number(PortAtom, Port)
+    -> true
+    ;  Port = 8080
+    ),
+    http_server(
+        http_dispatch,
+        [port(Port), ip('0.0.0.0')]
+    ),
+    format('Servidor iniciado en el puerto ~w~n', [Port]),
     thread_get_message(_).
 
 :- initialization(main, main).
