@@ -31,6 +31,7 @@ orientacion(contactar_unidad_medica).
 orientacion(acudir_a_urgencias).
 orientacion(consultar_profesional_salud).
 orientacion(verificar_disponibilidad).
+orientacion(confirmar_existencia).
 
 
 % ==========================================
